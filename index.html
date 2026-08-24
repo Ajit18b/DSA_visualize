@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D DSA Visualizer</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <div id="app">
+      <div id="ui-layer">
+        
+        <!-- Left Sidebar: Navigation & Controls -->
+        <aside id="sidebar">
+          <header>
+            <h1>DSA<span>.js</span></h1>
+          </header>
+          
+          <div style="padding: 0 24px; margin-top: 15px; display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.8rem; color: var(--text-muted);">ANIMATION SPEED</span>
+            <span id="speed-val" style="font-size: 0.8rem; color: var(--accent);">1.0x</span>
+          </div>
+          <div style="padding: 10px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 20px;">
+            <input type="range" id="speed-slider" min="0.2" max="3" step="0.1" value="1" style="width: 100%;">
+          </div>
+
+          <nav class="topic-tabs" style="margin-top: 10px;">
+            <button class="tab-btn active" data-topic="array">Array</button>
+            <button class="tab-btn" data-topic="linkedlist">Linked List</button>
+            <button class="tab-btn" data-topic="stack">Stack</button>
+            <button class="tab-btn" data-topic="queue">Queue</button>
+            <button class="tab-btn" data-topic="dll">Doubly Linked List</button>
+            <button class="tab-btn" data-topic="bst">Binary Search Tree</button>
+            <button class="tab-btn" data-topic="heap">Max Heap</button>
+            <button class="tab-btn" data-topic="hashtable">Hash Table</button>
+            <button class="tab-btn" data-topic="graph">Graph</button>
+            <button class="tab-btn" data-topic="trie">Trie</button>
+            <button class="tab-btn" data-topic="matrix">2D Matrix</button>
+          </nav>
+
+
+        </aside>
+
+        <!-- Right Sidebar: Topic Info, Logs & Code -->
+        <div class="right-sidebar">
+          <div id="topic-header">
+            <h2 id="topic-title">Array</h2>
+            <p id="topic-desc">A contiguous block of memory. Fast random access, but inserting or deleting elements requires shifting the others.</p>
+          </div>
+          
+          <div id="code-box">
+            <h3>Algorithm Notes</h3>
+            <p id="algo-notes">Select an action to see algorithm details.</p>
+            <h3>Java Code</h3>
+            <pre id="java-code"><code>// Java implementation will appear here</code></pre>
+          </div>
+
+          <div id="cheatsheet-box">
+            <h3>💡 Real-World Analogy</h3>
+            <p id="topic-analogy">Like lockers in a hallway.</p>
+            
+            <h3 style="margin-top: 15px;">⏱ Big-O Complexity</h3>
+            <table class="big-o-table">
+              <tr><th>Access</th><td id="o-access">O(1)</td></tr>
+              <tr><th>Search</th><td id="o-search">O(N)</td></tr>
+              <tr><th>Insert</th><td id="o-insert">O(N)</td></tr>
+              <tr><th>Delete</th><td id="o-delete">O(N)</td></tr>
+              <tr><th>Space</th><td id="o-space">O(N)</td></tr>
+            </table>
+          </div>
+
+          <div id="info-box">
+            <h3>Action Log</h3>
+            <p id="log-text">Application loaded.</p>
+          </div>
+        </div>
+        
+        <!-- Floating Media Dashboard -->
+        <div class="playback-controls-floating">
+          <button id="btn-step-back" disabled title="Step Backward">⏮</button>
+          <button id="btn-play-pause" title="Pause Animation (Manual Mode)">⏸</button>
+          <button id="btn-step" disabled title="Step Forward">⏭</button>
+          <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.2); margin: 0 5px;"></div>
+          <button id="btn-restart" title="Restart / Clear History">🔄</button>
+        </div>
+
+        <!-- Bottom Controls Panel (Horizontal Toolbar) -->
+        <div class="controls-panel">
+          
+          <!-- Array -->
+          <div id="controls-array" class="controls-section active">
+            <div class="control-group">
+              <button id="arr-btn-push">Push</button>
+              <button id="arr-btn-pop">Pop</button>
+            </div>
+            <div class="control-group">
+              <input type="number" id="arr-insert-idx" placeholder="Idx" min="0" max="9" value="2">
+              <button id="arr-btn-insert">Insert at Index</button>
+            </div>
+            <div class="control-group">
+              <input type="number" id="arr-delete-idx" placeholder="Idx" min="0" max="9" value="2">
+              <button id="arr-btn-delete">Delete at Index</button>
+            </div>
+            <div class="control-group">
+              <button id="arr-btn-traverse">Traverse</button>
+            </div>
+            <div class="control-group algo-group">
+              <button id="arr-btn-bubblesort" class="algo-btn">Bubble Sort</button>
+              <input type="number" id="arr-bs-val" placeholder="Val" min="1" max="99" value="42">
+              <button id="arr-btn-binarysearch" class="algo-btn">Binary Search</button>
+            </div>
+          </div>
+
+          <!-- Linked List -->
+          <div id="controls-linkedlist" class="controls-section">
+            <div class="control-group">
+              <button id="ll-btn-append">Append (Tail)</button>
+              <button id="ll-btn-prepend">Prepend (Head)</button>
+            </div>
+            <div class="control-group">
+              <input type="number" id="ll-insert-idx" placeholder="Idx" min="0" max="9" value="2">
+              <button id="ll-btn-insert">Insert</button>
+            </div>
+            <div class="control-group">
+              <input type="number" id="ll-delete-idx" placeholder="Idx" min="0" max="9" value="2">
+              <button id="ll-btn-delete">Delete</button>
+            </div>
+            <div class="control-group">
+              <button id="ll-btn-traverse">Traverse</button>
+            </div>
+            <div class="control-group algo-group">
+              <button id="ll-btn-reverse" class="algo-btn">Reverse List</button>
+            </div>
+          </div>
+
+          <!-- Stack -->
+          <div id="controls-stack" class="controls-section">
+            <div class="control-group">
+              <button id="stack-btn-push">Push (Top)</button>
+              <button id="stack-btn-pop">Pop (Top)</button>
+            </div>
+            <div class="control-group">
+              <button id="stack-btn-peek">Peek</button>
+            </div>
+            <div class="control-group algo-group">
+              <input type="text" id="stack-input-paren" placeholder="{[()]}" value="{[()]}">
+              <button id="stack-btn-validparen" class="algo-btn">Validate ()</button>
+            </div>
+          </div>
+
+          <!-- Queue -->
+          <div id="controls-queue" class="controls-section">
+            <div class="control-group">
+              <button id="queue-btn-enqueue">Enqueue</button>
+              <button id="queue-btn-dequeue">Dequeue</button>
+            </div>
+            <div class="control-group">
+              <button id="queue-btn-peek">Peek (Front)</button>
+            </div>
+            <div class="control-group algo-group">
+              <button id="queue-btn-roundrobin" class="algo-btn">Round-Robin (OS)</button>
+            </div>
+          </div>
+
+          <!-- Doubly Linked List -->
+          <div id="controls-dll" class="controls-section">
+            <div class="control-group">
+              <button id="dll-btn-append">Append</button>
+              <button id="dll-btn-prepend">Prepend</button>
+            </div>
+            <div class="control-group">
+              <input type="number" id="dll-insert-idx" placeholder="Idx" min="0" max="9" value="2">
+              <button id="dll-btn-insert">Insert</button>
+            </div>
+            <div class="control-group">
+              <input type="number" id="dll-delete-idx" placeholder="Idx" min="0" max="9" value="2">
+              <button id="dll-btn-delete">Delete</button>
+            </div>
+            <div class="control-group algo-group">
+              <input type="number" id="dll-lru-idx" placeholder="Idx" min="0" max="9" value="2">
+              <button id="dll-btn-lru" class="algo-btn">Access (LRU)</button>
+            </div>
+          </div>
+
+          <!-- BST -->
+          <div id="controls-bst" class="controls-section">
+            <div class="control-group">
+              <input type="number" id="bst-input-val" placeholder="Val" min="1" max="99" value="50">
+              <button id="bst-btn-insert">Insert</button>
+              <button id="bst-btn-search">Search</button>
+            </div>
+            <div class="control-group algo-group">
+              <button id="bst-btn-inorder" class="algo-btn">Inorder Traversal</button>
+            </div>
+          </div>
+
+          <!-- Max Heap -->
+          <div id="controls-heap" class="controls-section">
+            <div class="control-group">
+              <input type="number" id="heap-input-val" placeholder="Val" min="1" max="99" value="50">
+              <button id="heap-btn-insert">Insert</button>
+              <button id="heap-btn-extract">Extract Max</button>
+            </div>
+            <div class="control-group algo-group">
+              <button id="heap-btn-sort" class="algo-btn">Heap Sort</button>
+            </div>
+          </div>
+
+          <!-- Hash Table -->
+          <div id="controls-hashtable" class="controls-section">
+            <div class="control-group">
+              <input type="text" id="ht-input-key" placeholder="Key" value="Apple">
+              <input type="text" id="ht-input-val" placeholder="Val" value="100">
+              <button id="ht-btn-insert">Put</button>
+              <button id="ht-btn-search">Get</button>
+            </div>
+            <div class="control-group algo-group">
+              <input type="number" id="ht-twosum-target" placeholder="Target" value="150">
+              <button id="ht-btn-twosum" class="algo-btn">Two Sum</button>
+            </div>
+          </div>
+
+          <!-- Graph -->
+          <div id="controls-graph" class="controls-section">
+            <div class="control-group">
+              <input type="text" id="graph-input-node" placeholder="ID" value="A" maxlength="3">
+              <button id="graph-btn-addnode">Add Node</button>
+            </div>
+            <div class="control-group">
+              <input type="text" id="graph-input-edge1" placeholder="U" value="A" maxlength="3">
+              <input type="text" id="graph-input-edge2" placeholder="V" value="B" maxlength="3">
+              <button id="graph-btn-addedge">Add Edge</button>
+            </div>
+            <div class="control-group algo-group">
+              <button id="graph-btn-bfs" class="algo-btn">BFS</button>
+            </div>
+          </div>
+
+          <!-- Trie -->
+          <div id="controls-trie" class="controls-section">
+            <div class="control-group">
+              <input type="text" id="trie-input-word" placeholder="Word" value="CAT">
+              <button id="trie-btn-insert">Insert Word</button>
+              <button id="trie-btn-search">Search</button>
+            </div>
+            <div class="control-group algo-group">
+              <input type="text" id="trie-auto-prefix" placeholder="Prefix" value="CA">
+              <button id="trie-btn-autocomplete" class="algo-btn">Autocomplete</button>
+            </div>
+          </div>
+
+          <!-- Matrix -->
+          <div id="controls-matrix" class="controls-section">
+            <div class="control-group">
+              <input type="number" id="matrix-input-r" placeholder="R" min="0" max="2" value="1">
+              <input type="number" id="matrix-input-c" placeholder="C" min="0" max="3" value="2">
+              <input type="number" id="matrix-input-v" placeholder="Val" min="1" max="99" value="99">
+              <button id="matrix-btn-update">Update</button>
+            </div>
+            <div class="control-group algo-group">
+              <button id="matrix-btn-traverse" class="algo-btn">DFS Traverse</button>
+              <button id="matrix-btn-bfs" class="algo-btn">BFS Traversal</button>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+        
+      </div>
+      
+      <!-- Canvas for WebGL -->
+      <canvas id="webgl-canvas"></canvas>
+      
+      <!-- HTML Labels (Values and Indices) -->
+      <div id="labels-container"></div>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
