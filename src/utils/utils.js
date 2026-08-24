@@ -42,12 +42,14 @@ export function delay(ms) {
                 reject(new Error("Aborted"));
                 return;
             }
-            resolve();
             
             if (window.manualMode) {
                 gsap.globalTimeline.pause();
                 const btn = document.getElementById('btn-step');
                 if (btn) btn.disabled = false;
+                window.stepResolve = resolve; // Wait for user to click Step or Play
+            } else {
+                resolve();
             }
         });
     });

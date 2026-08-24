@@ -7,7 +7,8 @@ export class SceneManager {
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0x0f172a, 0.015); // sleek slate-900
 
-        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const fov = window.innerWidth < 900 ? 75 : 45;
+        this.camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.camera.position.set(0, 15, 30);
 
         this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: true });
@@ -19,6 +20,8 @@ export class SceneManager {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
+        this.controls.rotateSpeed = window.innerWidth < 900 ? 2.0 : 1.2;
+        this.controls.panSpeed = window.innerWidth < 900 ? 1.8 : 1.2;
         this.controls.minDistance = 10;
         this.controls.maxDistance = 60;
         this.controls.maxPolarAngle = Math.PI / 2 - 0.05;
@@ -43,11 +46,12 @@ export class SceneManager {
         this.gridHelper.material.opacity = 0.2;
         this.scene.add(this.gridHelper);
 
-        window.addEventListener('resize', () => this.onResize());
+        window.addEventListener('resize', () => this.onWindowResize());
     }
 
-    onResize() {
+    onWindowResize() {
         this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.fov = window.innerWidth < 900 ? 75 : 45;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
     }

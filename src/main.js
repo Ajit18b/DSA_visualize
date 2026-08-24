@@ -47,30 +47,57 @@ function escapeHTML(str) {
     }[tag]));
 }
 
+let liveHudTimeout = null;
+function showLiveHud() {
+    const hud = document.getElementById('live-hud');
+    if (hud) {
+        hud.classList.add('active');
+        if (liveHudTimeout) clearTimeout(liveHudTimeout);
+        liveHudTimeout = setTimeout(() => {
+            hud.classList.remove('active');
+        }, 3500); // Hide after 3.5s of no code updates
+    }
+}
+
 function logAction(msg) {
-    document.getElementById('log-text').innerText = msg;
+    const logText = document.getElementById('log-text');
+    if (logText) logText.innerText = msg;
+    const algoAction = document.getElementById('algo-action');
+    if (algoAction) algoAction.innerText = msg;
+    const hudNotes = document.getElementById('live-hud-notes');
+    if (hudNotes) hudNotes.innerText = msg;
+    showLiveHud();
 }
 
 function logCode(notes, javaCode) {
     document.getElementById('algo-notes').innerText = notes;
     currentJavaCode = javaCode;
     highlightCodeLine(-1);
+    showLiveHud();
 }
 
 function highlightCodeLine(index) {
     if (!currentJavaCode) return;
+    const lines = currentJavaCode.split('\n');
+    let htmlContent = '';
+    
     if (index === -1) {
-        document.getElementById('java-code').innerHTML = `<code>${escapeHTML(currentJavaCode)}</code>`;
+        htmlContent = lines.map(line => `<span style="display: block; line-height: 1.5;">${escapeHTML(line) || ' '}</span>`).join('');
     } else {
-        const lines = currentJavaCode.split('\n');
-        const highlighted = lines.map((line, i) => {
+        htmlContent = lines.map((line, i) => {
+            const safeLine = escapeHTML(line) || ' ';
             if (i === index) {
-                return `<span style="background: rgba(251, 191, 36, 0.2); border-left: 3px solid #fbbf24; padding-left: 10px; margin-left: -13px; display: block; width: calc(100% + 26px);">${escapeHTML(line)}</span>`;
+                return `<span style="background: rgba(251, 191, 36, 0.25); border-left: 3px solid #fbbf24; padding-left: 8px; margin-left: -12px; display: block; width: calc(100% + 24px); box-sizing: border-box; line-height: 1.5;">${safeLine}</span>`;
             }
-            return escapeHTML(line);
-        }).join('\n');
-        document.getElementById('java-code').innerHTML = `<code>${highlighted}</code>`;
+            return `<span style="display: block; line-height: 1.5;">${safeLine}</span>`;
+        }).join('');
     }
+    
+    const desktopCode = document.getElementById('java-code');
+    if (desktopCode) desktopCode.innerHTML = htmlContent;
+    const hudCode = document.getElementById('live-hud-code');
+    if (hudCode) hudCode.innerHTML = htmlContent;
+    showLiveHud();
 }
 
 function toggleButtons(disabled) {
@@ -192,6 +219,9 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         const btnStepBack = document.getElementById('btn-step-back');
         if (btnStepBack) btnStepBack.disabled = true;
         
+        // Auto-close mobile panels
+        if (typeof closeAllMobilePanels === 'function') closeAllMobilePanels();
+
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         
@@ -305,6 +335,11 @@ document.getElementById('btn-play-pause').addEventListener('click', () => {
 document.getElementById('btn-step').addEventListener('click', () => {
     if (window.manualMode) {
         document.getElementById('btn-step').disabled = true;
+        if (window.stepResolve) {
+            const resolve = window.stepResolve;
+            window.stepResolve = null;
+            resolve();
+        }
         gsap.globalTimeline.play();
     }
 });
@@ -412,6 +447,33 @@ document.getElementById('trie-btn-autocomplete').addEventListener('click', () =>
 document.getElementById('matrix-btn-update').addEventListener('click', () => { const r = parseInt(document.getElementById('matrix-input-r').value); const c = parseInt(document.getElementById('matrix-input-c').value); const v = parseInt(document.getElementById('matrix-input-v').value); queueAction(() => managers.matrix.updateCell(r, c, v)); });
 document.getElementById('matrix-btn-traverse').addEventListener('click', () => queueAction(() => managers.matrix.traverseDFS()));
 document.getElementById('matrix-btn-bfs').addEventListener('click', () => queueAction(() => managers.matrix.bfsShortestPath()));
+
+// Mobile UI Logic
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const mobileInfoBtn = document.getElementById('mobile-info-btn');
+const sidebar = document.getElementById('sidebar');
+const rightSidebar = document.querySelector('.right-sidebar');
+const mobileOverlay = document.getElementById('mobile-overlay');
+
+function closeAllMobilePanels() {
+    sidebar.classList.remove('open');
+    rightSidebar.classList.remove('open');
+    mobileOverlay.classList.remove('active');
+}
+
+mobileMenuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    rightSidebar.classList.remove('open');
+    mobileOverlay.classList.toggle('active', sidebar.classList.contains('open'));
+});
+
+mobileInfoBtn.addEventListener('click', () => {
+    rightSidebar.classList.toggle('open');
+    sidebar.classList.remove('open');
+    mobileOverlay.classList.toggle('active', rightSidebar.classList.contains('open'));
+});
+
+mobileOverlay.addEventListener('click', closeAllMobilePanels);
 
 // Animation Loop
 function animate() {

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>3D DSA Visualizer</title>
     <link rel="stylesheet" href="./style.css">
   </head>
@@ -10,6 +10,11 @@
     <div id="app">
       <div id="ui-layer">
         
+        <!-- Mobile Navigation Controls -->
+        <button id="mobile-menu-btn">Menu</button>
+        <button id="mobile-info-btn">Info</button>
+        <div id="mobile-overlay"></div>
+
         <!-- Left Sidebar: Navigation & Controls -->
         <aside id="sidebar">
           <header>
@@ -48,9 +53,13 @@
             <p id="topic-desc">A contiguous block of memory. Fast random access, but inserting or deleting elements requires shifting the others.</p>
           </div>
           
-          <div id="code-box">
-            <h3>Algorithm Notes</h3>
-            <p id="algo-notes">Select an action to see algorithm details.</p>
+          <div class="sidebar-header">
+            <h2>Activity / Code</h2>
+          </div>
+          <div class="code-container">
+            <h3 id="algo-name">Select an algorithm</h3>
+            <p id="algo-action" style="color: #60a5fa; font-weight: 500; margin-bottom: 4px;"></p>
+            <p id="algo-notes">Log will appear here...</p>
             <h3>Java Code</h3>
             <pre id="java-code"><code>// Java implementation will appear here</code></pre>
           </div>
@@ -73,6 +82,12 @@
             <h3>Action Log</h3>
             <p id="log-text">Application loaded.</p>
           </div>
+        </div>
+        
+        <!-- Live Action HUD (Top Center) -->
+        <div id="live-hud">
+          <p id="live-hud-notes"></p>
+          <pre><code id="live-hud-code"></code></pre>
         </div>
         
         <!-- Floating Media Dashboard -->
@@ -264,8 +279,6 @@
           </div>
           
         </div>
-      </div>
-        
       </div>
       
       <!-- Canvas for WebGL -->
